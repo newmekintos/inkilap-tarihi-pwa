@@ -1,0 +1,15 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Türk bayrağı kırmızısı -->
+  <rect width="512" height="512" fill="#E30A17"/>
+  
+  <!-- Hilal (beyaz) -->
+  <circle cx="256" cy="256" r="120" fill="#FFFFFF"/>
+  <circle cx="286" cy="256" r="100" fill="#E30A17"/>
+  
+  <!-- Yıldız (beyaz) -->
+  <path d="M 360 256 L 377 302 L 426 302 L 387 330 L 404 376 L 360 348 L 316 376 L 333 330 L 294 302 L 343 302 Z" fill="#FFFFFF"/>
+  
+  <!-- İT yazısı -->
+  <rect x="196" y="420" width="120" height="60" fill="#FFFFFF" rx="8"/>
+  <text x="256" y="465" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E30A17" text-anchor="middle">İT</text>
+</svg>

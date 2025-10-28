@@ -36,105 +36,115 @@ if (window.matchMedia) {
     });
 }
 
-// Setup theme toggle after DOM loads
+// Setup theme toggle and other UI after DOM loads - Works in ALL browsers
 document.addEventListener('DOMContentLoaded', () => {
+    // Theme Toggle - Chrome, Firefox, Safari, Edge compatible
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
+        themeToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             body.classList.toggle('dark-theme');
             const theme = body.classList.contains('dark-theme') ? 'dark' : 'light';
             localStorage.setItem('theme', theme);
-            console.log('Theme changed to:', theme);
+            console.log('✅ Theme changed to:', theme);
+        }, { passive: false });
+    } else {
+        console.error('❌ Theme toggle button not found!');
+    }
+
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    if (mobileMenuToggle && sidebar) {
+        mobileMenuToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebar.classList.toggle('active');
         });
-    }
-});
 
-// Mobile Menu Toggle
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const sidebar = document.getElementById('sidebar');
-
-mobileMenuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-});
-
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768) {
-        if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            sidebar.classList.remove('active');
-        }
-    }
-});
-
-// Navigation
-const navItems = document.querySelectorAll('.nav-item');
-const contentSections = document.querySelectorAll('.content-section');
-
-navItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const sectionId = item.getAttribute('data-section');
-        
-        // Update active nav item
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-        
-        // Show corresponding section
-        contentSections.forEach(section => {
-            section.classList.remove('active');
-            if (section.id === sectionId) {
-                section.classList.add('active');
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
             }
         });
+    }
+
+    // Navigation - Initialize after DOM is ready
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    // Progress Tracking Function
+    function updateProgress() {
+        const visitedSections = JSON.parse(localStorage.getItem('visitedSections') || '[]');
+        const currentSection = document.querySelector('.content-section.active')?.id;
         
-        // Close mobile menu
-        if (window.innerWidth <= 768) {
-            sidebar.classList.remove('active');
+        if (currentSection && !visitedSections.includes(currentSection)) {
+            visitedSections.push(currentSection);
+            localStorage.setItem('visitedSections', JSON.stringify(visitedSections));
         }
         
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const totalSections = contentSections.length;
+        const percentage = (visitedSections.length / totalSections) * 100;
         
-        // Save current section
-        localStorage.setItem('currentSection', sectionId);
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
         
-        // Update progress
-        updateProgress();
+        if (progressFill && progressText) {
+            progressFill.style.width = percentage + '%';
+            progressText.textContent = `${visitedSections.length}/${totalSections} Konu`;
+        }
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const sectionId = item.getAttribute('data-section');
+            
+            // Update active nav item
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            
+            // Show corresponding section
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+            
+            // Close mobile menu
+            if (window.innerWidth <= 768 && sidebar) {
+                sidebar.classList.remove('active');
+            }
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Save current section
+            localStorage.setItem('currentSection', sectionId);
+            
+            // Update progress
+            updateProgress();
+        });
     });
-});
 
-// Restore last section
-const savedSection = localStorage.getItem('currentSection');
-if (savedSection) {
-    const savedItem = document.querySelector(`[data-section="${savedSection}"]`);
-    if (savedItem) {
-        savedItem.click();
+    // Restore last section
+    const savedSection = localStorage.getItem('currentSection');
+    if (savedSection) {
+        const savedItem = document.querySelector(`[data-section="${savedSection}"]`);
+        if (savedItem) {
+            savedItem.click();
+        }
     }
-}
 
-// Progress Tracking
-function updateProgress() {
-    const visitedSections = JSON.parse(localStorage.getItem('visitedSections') || '[]');
-    const currentSection = document.querySelector('.content-section.active')?.id;
-    
-    if (currentSection && !visitedSections.includes(currentSection)) {
-        visitedSections.push(currentSection);
-        localStorage.setItem('visitedSections', JSON.stringify(visitedSections));
-    }
-    
-    const totalSections = contentSections.length;
-    const percentage = (visitedSections.length / totalSections) * 100;
-    
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    
-    progressFill.style.width = percentage + '%';
-    progressText.textContent = `${visitedSections.length}/${totalSections} Konu`;
-}
-
-// Initial progress update
-updateProgress();
+    // Initial progress update
+    updateProgress();
+}); // END DOMContentLoaded
 
 // Section-specific Quiz Questions
 const quizData = {

@@ -67,27 +67,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check if already installed (standalone mode)
     function isPWAInstalled() {
-        return window.matchMedia('(display-mode: standalone)').matches ||
-               window.navigator.standalone === true;
+        // Check display mode
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+        const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches;
+        
+        // iOS specific check
+        const isIOSStandalone = window.navigator.standalone === true;
+        
+        return isStandalone || isFullscreen || isMinimalUI || isIOSStandalone;
     }
 
     // Show/hide button based on install status
     if (installButton) {
         if (isPWAInstalled()) {
             installButton.style.display = 'none';
-            console.log('ℹ️ PWA already installed');
+            console.log('✅ PWA is running in standalone mode - Install button hidden');
         } else {
             // Show button for all platforms
             installButton.style.display = 'flex';
-            console.log('📲 Install button ready');
+            console.log('📲 Install button visible (browser mode)');
         }
 
         // Listen for beforeinstallprompt (Chrome, Edge, Android)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installButton.style.display = 'flex';
-            console.log('✅ PWA install prompt available (Android/Desktop)');
+            
+            // Only show button if NOT in standalone mode
+            if (!isPWAInstalled()) {
+                installButton.style.display = 'flex';
+                console.log('✅ PWA install prompt available (Android/Desktop)');
+            } else {
+                console.log('ℹ️ Install prompt available but already in standalone mode');
+            }
         });
 
         // Handle button click
@@ -120,9 +133,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Hide button after successful install
         window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA installed!');
+            console.log('✅ PWA successfully installed!');
             installButton.style.display = 'none';
         });
+
+        // Additional check: Monitor display mode changes
+        if (window.matchMedia) {
+            const standaloneQuery = window.matchMedia('(display-mode: standalone)');
+            standaloneQuery.addEventListener('change', (e) => {
+                if (e.matches) {
+                    console.log('✅ Switched to standalone mode - Hiding install button');
+                    installButton.style.display = 'none';
+                }
+            });
+        }
     }
 
     // Mobile Menu Toggle

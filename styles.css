@@ -121,6 +121,22 @@ html[data-theme="dark"] .moon-icon {
     font-size: 14px;
 }
 
+/* Hide install button when PWA is already installed (standalone mode) */
+@media (display-mode: standalone) {
+    .install-button {
+        display: none !important;
+    }
+}
+
+/* iOS standalone mode */
+@media (display-mode: standalone),
+       (display-mode: fullscreen),
+       (display-mode: minimal-ui) {
+    .install-button {
+        display: none !important;
+    }
+}
+
 .install-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(230, 57, 70, 0.4);

@@ -9,14 +9,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="İnkılap Tarihi">
     <title>İnkılap Tarihi - Premium Çalışma Platformu</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css?v=2.0">
+    <link rel="manifest" href="manifest.json?v=2.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico?v=2.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico?v=2.0">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2.0">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=2.0">
+    <link rel="apple-touch-icon" href="icon-192.png?v=2.0">
+    <link rel="shortcut icon" href="favicon.ico?v=2.0">
 </head>
 <body>
     <button class="theme-toggle" id="themeToggle" aria-label="Tema Değiştir">
@@ -111,16 +111,43 @@
     <script src="content.js"></script>
     <script src="script.js"></script>
     <script>
-        // Register Service Worker for PWA
+        // Register Service Worker for PWA with auto-update
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('Service Worker registered successfully:', registration.scope);
+                        console.log('✅ Service Worker registered:', registration.scope);
+                        
+                        // Check for updates every 5 seconds
+                        setInterval(() => {
+                            registration.update();
+                        }, 5000);
+                        
+                        // Listen for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('🔄 New Service Worker found! Updating...');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'activated') {
+                                    console.log('✨ New Service Worker activated!');
+                                    console.log('🔄 Reloading page to show new version...');
+                                    // Auto reload to show new version
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1000);
+                                }
+                            });
+                        });
                     })
                     .catch(error => {
-                        console.log('Service Worker registration failed:', error);
+                        console.error('❌ Service Worker registration failed:', error);
                     });
+            });
+            
+            // Listen for controller change (new SW activated)
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('🔄 Controller changed! New Service Worker is active.');
             });
         }
     </script>

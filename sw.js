@@ -1,16 +1,32 @@
-const CACHE_VERSION = 'v3.0'; // Yeni logo (sadece ay-yıldız) + Service Worker path fix
+const CACHE_VERSION = 'v4.0'; // Network-first strategy + auto-update fix
 const CACHE_NAME = `inkilap-tarihi-${CACHE_VERSION}`;
-const urlsToCache = [
+
+// Files that should use network-first (HTML, CSS, JS)
+const networkFirstUrls = [
   './',
   './index.html',
   './styles.css',
   './script.js',
-  './content.js',
+  './content.js'
+];
+
+// Files that can use cache-first (images, manifest)
+const cacheFirstUrls = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
   './favicon.ico'
 ];
+
+const urlsToCache = [...networkFirstUrls, ...cacheFirstUrls];
+
+// Listen for SKIP_WAITING message
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('📨 Received SKIP_WAITING message');
+    self.skipWaiting();
+  }
+});
 
 // Install event - cache files
 self.addEventListener('install', (event) => {
@@ -25,39 +41,58 @@ self.addEventListener('install', (event) => {
         console.log('✅ All files cached!');
       })
   );
-  // Force waiting service worker to become active
+  // Auto-skip waiting for immediate activation
   self.skipWaiting();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Helper function to check if URL should use network-first
+function shouldUseNetworkFirst(url) {
+  return networkFirstUrls.some(pattern => url.includes(pattern.replace('./', '')));
+}
+
+// Fetch event - Smart caching strategy
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
+  const url = event.request.url;
+  
+  // Network-first strategy for HTML, CSS, JS
+  if (shouldUseNetworkFirst(url)) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Clone and cache the response
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+          console.log('📡 Network-first:', event.request.url);
           return response;
-        }
-        return fetch(event.request).then(
-          (response) => {
-            // Check if we received a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
+        })
+        .catch(() => {
+          // Network failed, try cache
+          console.log('💾 Network failed, using cache:', event.request.url);
+          return caches.match(event.request);
+        })
+    );
+  } 
+  // Cache-first strategy for images and static files
+  else {
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          if (response) {
+            console.log('💾 Cache-first:', event.request.url);
             return response;
           }
-        );
-      })
-  );
+          return fetch(event.request).then((response) => {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+            return response;
+          });
+        })
+    );
+  }
 });
 
 // Activate event - clean up old caches

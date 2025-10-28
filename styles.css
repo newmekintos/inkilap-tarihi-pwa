@@ -137,18 +137,36 @@ html[data-theme="dark"] .moon-icon {
     color: white;
 }
 
-/* Hide on mobile if too cramped */
-@media (max-width: 480px) {
+/* Responsive sizing for mobile */
+@media (max-width: 768px) {
     .install-button {
         padding: 10px 16px;
         font-size: 12px;
-        bottom: 15px;
+        bottom: 80px; /* Above mobile nav if exists */
         right: 15px;
     }
     
     .install-button svg {
         width: 18px;
         height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .install-button {
+        padding: 8px 14px;
+        font-size: 11px;
+        bottom: 20px;
+        right: 10px;
+    }
+    
+    .install-button svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .install-button span {
+        font-size: 11px;
     }
 }
 

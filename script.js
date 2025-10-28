@@ -61,49 +61,69 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('❌ Theme toggle button not found!');
     }
 
-    // PWA Install Button
+    // PWA Install Button - Universal (works on all platforms)
     let deferredPrompt;
     const installButton = document.getElementById('installButton');
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent the default browser install prompt
-        e.preventDefault();
-        deferredPrompt = e;
-        
-        // Show our custom install button
-        installButton.style.display = 'flex';
-        console.log('✅ PWA install prompt ready');
-    });
+    // Check if already installed (standalone mode)
+    function isPWAInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true;
+    }
 
+    // Show/hide button based on install status
     if (installButton) {
-        installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                console.log('❌ Install prompt not available');
-                return;
-            }
+        if (isPWAInstalled()) {
+            installButton.style.display = 'none';
+            console.log('ℹ️ PWA already installed');
+        } else {
+            // Show button for all platforms
+            installButton.style.display = 'flex';
+            console.log('📲 Install button ready');
+        }
 
-            // Show the install prompt
-            deferredPrompt.prompt();
-            
-            // Wait for the user's response
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`👤 User response: ${outcome}`);
-            
-            if (outcome === 'accepted') {
-                console.log('✅ PWA installed!');
+        // Listen for beforeinstallprompt (Chrome, Edge, Android)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'flex';
+            console.log('✅ PWA install prompt available (Android/Desktop)');
+        });
+
+        // Handle button click
+        installButton.addEventListener('click', async () => {
+            // If we have the native prompt (Android/Chrome)
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`👤 User response: ${outcome}`);
+                
+                if (outcome === 'accepted') {
+                    console.log('✅ PWA installed!');
+                    installButton.style.display = 'none';
+                }
+                
+                deferredPrompt = null;
+            } 
+            // iOS Safari or other browsers
+            else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+                
+                if (isIOS && isSafari) {
+                    alert('📲 Uygulamayı yüklemek için:\n\n1. Paylaş butonuna (⬆️) basın\n2. "Ana Ekrana Ekle" seçin\n3. Sağ üstteki "Ekle" butonuna basın');
+                } else {
+                    alert('📲 Uygulamayı yüklemek için:\n\nTarayıcınızın menüsünden "Ana ekrana ekle" veya "Yükle" seçeneğini kullanın.');
+                }
             }
-            
-            // Clear the prompt
-            deferredPrompt = null;
+        });
+
+        // Hide button after successful install
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA installed!');
             installButton.style.display = 'none';
         });
     }
-
-    // Hide button if already installed
-    window.addEventListener('appinstalled', () => {
-        console.log('✅ PWA was installed');
-        installButton.style.display = 'none';
-    });
 
     // Mobile Menu Toggle
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');

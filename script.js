@@ -6,21 +6,17 @@ function detectSystemTheme() {
     return 'light';
 }
 
-// Initialize theme IMMEDIATELY (before DOM loads) - Prevents flash
+// Initialize theme IMMEDIATELY using data-theme attribute
 (function() {
     const savedTheme = localStorage.getItem('theme');
+    const html = document.documentElement;
+    
     if (savedTheme) {
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark-theme');
-        } else {
-            document.documentElement.classList.remove('dark-theme');
-        }
+        html.setAttribute('data-theme', savedTheme);
     } else {
         // Use system preference only if no saved theme
         const systemTheme = detectSystemTheme();
-        if (systemTheme === 'dark') {
-            document.documentElement.classList.add('dark-theme');
-        }
+        html.setAttribute('data-theme', systemTheme);
     }
 })();
 
@@ -29,11 +25,7 @@ if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
             const html = document.documentElement;
-            if (e.matches) {
-                html.classList.add('dark-theme');
-            } else {
-                html.classList.remove('dark-theme');
-            }
+            html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
         }
     });
 }
@@ -53,15 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             e.stopPropagation();
             
-            // Toggle ONLY html element (documentElement = :root in CSS)
+            // Toggle using data-theme attribute
             const htmlElement = document.documentElement;
-            htmlElement.classList.toggle('dark-theme');
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            const isDark = htmlElement.classList.contains('dark-theme');
-            const theme = isDark ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             
-            localStorage.setItem('theme', theme);
-            console.log('✅ Theme changed to:', theme, '| HTML has dark-theme:', isDark);
+            console.log('✅ Theme changed to:', newTheme, '| data-theme attribute:', htmlElement.getAttribute('data-theme'));
         }, { passive: false, capture: true });
         
         console.log('✅ Theme toggle initialized successfully');

@@ -6,27 +6,29 @@ function detectSystemTheme() {
     return 'light';
 }
 
-// Theme Management - Initialize immediately
-const body = document.body;
-
-// Initialize theme before DOM loads
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-    if (savedTheme === 'dark') {
-        body.classList.add('dark-theme');
+// Initialize theme IMMEDIATELY (before DOM loads) - Prevents flash
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            document.body.classList.add('dark-theme');
+        }
+    } else {
+        // Use system preference
+        const systemTheme = detectSystemTheme();
+        if (systemTheme === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            document.body.classList.add('dark-theme');
+        }
     }
-} else {
-    // Use system preference
-    const systemTheme = detectSystemTheme();
-    if (systemTheme === 'dark') {
-        body.classList.add('dark-theme');
-    }
-}
+})();
 
 // Listen for system theme changes
 if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
+            const body = document.body;
             if (e.matches) {
                 body.classList.add('dark-theme');
             } else {
@@ -39,16 +41,34 @@ if (window.matchMedia) {
 // Setup theme toggle and other UI after DOM loads - Works in ALL browsers
 document.addEventListener('DOMContentLoaded', () => {
     // Theme Toggle - Chrome, Firefox, Safari, Edge compatible
+    // Get fresh reference to avoid timing issues
     const themeToggle = document.getElementById('themeToggle');
+    
     if (themeToggle) {
-        themeToggle.addEventListener('click', (e) => {
+        // Remove any existing listeners (cleanup)
+        const newToggle = themeToggle.cloneNode(true);
+        themeToggle.parentNode.replaceChild(newToggle, themeToggle);
+        
+        newToggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            body.classList.toggle('dark-theme');
-            const theme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+            
+            // Get fresh body reference on each click
+            const bodyElement = document.body;
+            const htmlElement = document.documentElement;
+            
+            // Toggle both body and html
+            bodyElement.classList.toggle('dark-theme');
+            htmlElement.classList.toggle('dark-theme');
+            
+            const isDark = bodyElement.classList.contains('dark-theme');
+            const theme = isDark ? 'dark' : 'light';
+            
             localStorage.setItem('theme', theme);
-            console.log('✅ Theme changed to:', theme);
-        }, { passive: false });
+            console.log('✅ Theme changed to:', theme, '| Body has dark-theme:', isDark);
+        }, { passive: false, capture: true });
+        
+        console.log('✅ Theme toggle initialized successfully');
     } else {
         console.error('❌ Theme toggle button not found!');
     }

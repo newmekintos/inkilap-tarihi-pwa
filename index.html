@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="12. Sınıf İnkılap Tarihi Sınav Hazırlık Çalışma Platformu - Quiz, İçerik ve İlerleme Takibi">
+    <meta name="theme-color" content="#e63946">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="İnkılap Tarihi">
+    <title>İnkılap Tarihi - Premium Çalışma Platformu</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema Değiştir">
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+        </svg>
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <div class="logo-text">
+                    <h2>İnkılap Tarihi</h2>
+                    <p>Çalışma Platformu</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#ataturk" class="nav-item active" data-section="ataturk">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Atatürk'ün Hayatı</span>
+            </a>
+            <a href="#ww1" class="nav-item" data-section="ww1">
+                <span class="nav-icon">🌍</span>
+                <span class="nav-text">I. Dünya Savaşı</span>
+            </a>
+            <a href="#balkan" class="nav-item" data-section="balkan">
+                <span class="nav-icon">🗺️</span>
+                <span class="nav-text">Balkan Savaşları</span>
+            </a>
+            <a href="#trablusgarp" class="nav-item" data-section="trablusgarp">
+                <span class="nav-icon">🏜️</span>
+                <span class="nav-text">Trablusgarp Savaşı</span>
+            </a>
+            <a href="#mondros" class="nav-item" data-section="mondros">
+                <span class="nav-icon">📜</span>
+                <span class="nav-text">Mondros Mütarekesi</span>
+            </a>
+            <a href="#kuvay" class="nav-item" data-section="kuvay">
+                <span class="nav-icon">🇹🇷</span>
+                <span class="nav-text">Kuva-yi Milliye</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span>📊 İlerleme</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0/6 Konu</div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">12. Sınıf İnkılap Tarihi</h1>
+                    <p class="page-subtitle">Sınav Hazırlık Çalışma Platformu</p>
+                </div>
+            </header>
+
+
+            <div class="sections-container">
+                <section class="content-section active" id="ataturk" data-content="ataturk"></section>
+                <section class="content-section" id="ww1" data-content="ww1"></section>
+                <section class="content-section" id="balkan" data-content="balkan"></section>
+                <section class="content-section" id="trablusgarp" data-content="trablusgarp"></section>
+                <section class="content-section" id="mondros" data-content="mondros"></section>
+                <section class="content-section" id="kuvay" data-content="kuvay"></section>
+            </div>
+        </div>
+    </main>
+
+    <script src="content.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

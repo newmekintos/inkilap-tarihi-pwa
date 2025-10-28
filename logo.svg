@@ -2,14 +2,10 @@
   <!-- Türk bayrağı kırmızısı -->
   <rect width="512" height="512" fill="#E30A17"/>
   
-  <!-- Hilal (beyaz) -->
-  <circle cx="256" cy="256" r="120" fill="#FFFFFF"/>
-  <circle cx="286" cy="256" r="100" fill="#E30A17"/>
+  <!-- Hilal (beyaz) - Tam ortada -->
+  <circle cx="230" cy="256" r="120" fill="#FFFFFF"/>
+  <circle cx="270" cy="256" r="96" fill="#E30A17"/>
   
-  <!-- Yıldız (beyaz) -->
-  <path d="M 360 256 L 377 302 L 426 302 L 387 330 L 404 376 L 360 348 L 316 376 L 333 330 L 294 302 L 343 302 Z" fill="#FFFFFF"/>
-  
-  <!-- İT yazısı -->
-  <rect x="196" y="420" width="120" height="60" fill="#FFFFFF" rx="8"/>
-  <text x="256" y="465" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E30A17" text-anchor="middle">İT</text>
+  <!-- Yıldız (beyaz) - Tam ortada -->
+  <path d="M 310 256 L 322 290 L 358 290 L 330 310 L 342 344 L 310 324 L 278 344 L 290 310 L 262 290 L 298 290 Z" fill="#FFFFFF"/>
 </svg>

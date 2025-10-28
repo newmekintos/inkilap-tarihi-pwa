@@ -1,15 +1,15 @@
-const CACHE_VERSION = 'v2.0'; // Version güncellendi - yeni logo ve tema düzeltmeleri
+const CACHE_VERSION = 'v3.0'; // Yeni logo (sadece ay-yıldız) + Service Worker path fix
 const CACHE_NAME = `inkilap-tarihi-${CACHE_VERSION}`;
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/content.js',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/favicon.ico'
+  './',
+  './index.html',
+  './styles.css',
+  './script.js',
+  './content.js',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './favicon.ico'
 ];
 
 // Install event - cache files

@@ -100,6 +100,58 @@ html[data-theme="dark"] .moon-icon {
     display: block; 
 }
 
+/* PWA Install Button - Bottom Right */
+.install-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    padding: 12px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.install-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(230, 57, 70, 0.4);
+    background: var(--primary-dark);
+}
+
+.install-button svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+}
+
+.install-button span {
+    color: white;
+}
+
+/* Hide on mobile if too cramped */
+@media (max-width: 480px) {
+    .install-button {
+        padding: 10px 16px;
+        font-size: 12px;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .install-button svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
 .mobile-menu-toggle {
     display: none;
     position: fixed;

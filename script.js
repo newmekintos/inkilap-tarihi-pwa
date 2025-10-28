@@ -61,6 +61,50 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('❌ Theme toggle button not found!');
     }
 
+    // PWA Install Button
+    let deferredPrompt;
+    const installButton = document.getElementById('installButton');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the default browser install prompt
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show our custom install button
+        installButton.style.display = 'flex';
+        console.log('✅ PWA install prompt ready');
+    });
+
+    if (installButton) {
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                console.log('❌ Install prompt not available');
+                return;
+            }
+
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user's response
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`👤 User response: ${outcome}`);
+            
+            if (outcome === 'accepted') {
+                console.log('✅ PWA installed!');
+            }
+            
+            // Clear the prompt
+            deferredPrompt = null;
+            installButton.style.display = 'none';
+        });
+    }
+
+    // Hide button if already installed
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ PWA was installed');
+        installButton.style.display = 'none';
+    });
+
     // Mobile Menu Toggle
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const sidebar = document.getElementById('sidebar');

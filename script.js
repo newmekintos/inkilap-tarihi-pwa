@@ -12,27 +12,27 @@ function detectSystemTheme() {
     if (savedTheme) {
         if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark-theme');
-            document.body.classList.add('dark-theme');
+        } else {
+            document.documentElement.classList.remove('dark-theme');
         }
     } else {
-        // Use system preference
+        // Use system preference only if no saved theme
         const systemTheme = detectSystemTheme();
         if (systemTheme === 'dark') {
             document.documentElement.classList.add('dark-theme');
-            document.body.classList.add('dark-theme');
         }
     }
 })();
 
-// Listen for system theme changes
+// Listen for system theme changes (only if no manual preference saved)
 if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
-            const body = document.body;
+            const html = document.documentElement;
             if (e.matches) {
-                body.classList.add('dark-theme');
+                html.classList.add('dark-theme');
             } else {
-                body.classList.remove('dark-theme');
+                html.classList.remove('dark-theme');
             }
         }
     });
@@ -53,19 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             e.stopPropagation();
             
-            // Get fresh body reference on each click
-            const bodyElement = document.body;
+            // Toggle ONLY html element (documentElement = :root in CSS)
             const htmlElement = document.documentElement;
-            
-            // Toggle both body and html
-            bodyElement.classList.toggle('dark-theme');
             htmlElement.classList.toggle('dark-theme');
             
-            const isDark = bodyElement.classList.contains('dark-theme');
+            const isDark = htmlElement.classList.contains('dark-theme');
             const theme = isDark ? 'dark' : 'light';
             
             localStorage.setItem('theme', theme);
-            console.log('✅ Theme changed to:', theme, '| Body has dark-theme:', isDark);
+            console.log('✅ Theme changed to:', theme, '| HTML has dark-theme:', isDark);
         }, { passive: false, capture: true });
         
         console.log('✅ Theme toggle initialized successfully');

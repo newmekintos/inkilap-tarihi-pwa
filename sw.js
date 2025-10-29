@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4.0'; // Network-first strategy + auto-update fix
+const CACHE_VERSION = 'v5.0'; // Trablusgarp ve 1. Balkan Savaşı sonuçları eklendi
 const CACHE_NAME = `inkilap-tarihi-${CACHE_VERSION}`;
 
 // Files that should use network-first (HTML, CSS, JS)

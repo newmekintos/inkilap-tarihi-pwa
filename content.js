@@ -214,6 +214,15 @@ const contentData = {
                             <li><strong>M</strong>akedonya</li>
                         </ul>
                     </div>
+                    <div class="war-result">
+                        <h4>🎯 Savaş Sonuçları</h4>
+                        <ul>
+                            <li>Osmanlı Devleti Rumeli'deki topraklarının çoğunu kaybetti</li>
+                            <li>Londra Antlaşması (1913) ile kaybedilen topraklar onaylandı</li>
+                            <li>Balkan milletleri arasında toprak paylaşımında anlaşmazlıklar çıktı</li>
+                            <li>II. Balkan Savaşı'nın yolunu açtı</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -269,6 +278,19 @@ const contentData = {
                     <li>Osmanlı'nın topraklarını koruyamayacağı ortaya çıktı</li>
                     <li>Kuzey Afrika'daki son toprak parçası kaybedildi</li>
                     <li>Halifelik ikinci defa siyasi bir güç olarak kullanıldı</li>
+                </ul>
+            </div>
+
+            <div class="glass-card accent">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
+                    <h3>Trablusgarp Savaşı Sonuçları</h3>
+                </div>
+                <ul class="card-list">
+                    <li>Trablusgarp ve Bingazi İtalya'ya bırakıldı</li>
+                    <li>Ege Adaları geçici olarak İtalya işgalinde kaldı</li>
+                    <li>Osmanlı Devleti'nin Afrika'daki son toprakları kaybedildi</li>
+                    <li>Balkan devletlerinin Osmanlı'ya saldırmasına zemin hazırladı</li>
                 </ul>
             </div>
         </div>
